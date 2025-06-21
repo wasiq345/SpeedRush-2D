@@ -69,6 +69,10 @@ void cars :: Update()
         position.y = -100;
         position.x = RandomIndex;
     }
+    else if(IsKeyDown(KEY_SPACE))
+    {
+        position.y += CarSpeed + 4;
+    }
     else
     {
         position.y += CarSpeed;
@@ -212,7 +216,15 @@ int main() {
 
         else if (currentState == PLAYING) 
             {
-            bgpos.y += 5;
+            if(IsKeyDown(KEY_SPACE))
+            {
+                bgpos.y += 9;
+            }
+            else
+            {
+                bgpos.y += 5;
+            }
+
             if(bgpos.y > GetScreenHeight() - 600)
             {
                 bgpos.y = -600;
@@ -260,6 +272,7 @@ int main() {
         {
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
+            DrawText("space to boost", 150, GetScreenHeight() - 40, 14, SKYBLUE);
             game.Draw();
         }
         else if (currentState == GAME_OVER) 
