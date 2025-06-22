@@ -54,12 +54,10 @@ cars :: cars(float StartX, float StartY)
     CarSpeed = 7;
 }
 
-
 void cars :: draw()
 {
     DrawTexture(CarImage, position.x, position.y, WHITE);
 }
-
 
 void cars :: Update()
 {
@@ -78,7 +76,6 @@ void cars :: Update()
         position.y += CarSpeed;
     }
 }
-
 
 Rectangle cars :: GetRect()
     {
@@ -184,13 +181,15 @@ void Game :: Reset()
 
 int main() {
     int screenWidth = 390;
-    int screenHeight = 700;
+    int screenHeight = 650;
     Vector2 bgpos = {-350,-600};
     InitWindow(screenWidth, screenHeight, "SpeedRush 2D");
     Texture2D background = LoadTexture("graphics/road.png");
     InitAudioDevice();  
     Sound Bike = LoadSound("sounds/race.wav");
     Sound GameOver = LoadSound("sounds/game_over.wav");
+    Texture2D menuPage = LoadTexture("graphics/menu_page.png");
+    Texture2D gameOver = LoadTexture("graphics/game_over.png");
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -247,10 +246,14 @@ int main() {
         }
         else if (currentState == GAME_OVER) 
         {
-            if (IsKeyPressed(KEY_R)) 
+            if (IsKeyPressed(KEY_Y)) 
             {
                 currentState = MENU;
                 game.Reset();
+            }
+            if(IsKeyPressed(KEY_N))
+            {
+                break;
             }
             if (IsKeyPressed(KEY_ESCAPE)) 
             {
@@ -263,10 +266,8 @@ int main() {
         
         if (currentState == MENU) 
         {
-            ClearBackground(BLACK);
-            DrawText("SPEEDRUSH 2D", screenWidth/2 - MeasureText("SPEEDRUSH 2D", 40)/2, 150, 40, YELLOW);
-            DrawText("Press ENTER to start", screenWidth/2 - MeasureText("Press ENTER to start", 30)/2, 300, 30, WHITE);
-            DrawText("Press E to exit", screenWidth/2 - MeasureText("Press E to exit", 30)/2, 360, 30, WHITE);
+            ClearBackground(WHITE);
+            DrawTexture(menuPage, 0, 10, WHITE);
         }
         else if (currentState == PLAYING) 
         {
@@ -277,10 +278,8 @@ int main() {
         }
         else if (currentState == GAME_OVER) 
         {
-            ClearBackground(BLACK);
-            DrawText("GAME OVER", screenWidth/2 - MeasureText("GAME OVER", 50)/2, 250, 50, RED);
-            DrawText("Press R to return to menu", screenWidth/2 - MeasureText("Press R to return to menu", 20)/2, 350, 20, WHITE);
-            DrawText("Press ESC to exit", screenWidth/2 - MeasureText("Press ESC to exit", 20)/2, 380, 20, WHITE);
+             ClearBackground(WHITE);
+             DrawTexture(gameOver, 0, 0, WHITE);
         }
         
         EndDrawing();
