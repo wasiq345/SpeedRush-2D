@@ -3,32 +3,37 @@
 #include<vector>
 using namespace std;
 
-class cars{
-    int CarSpeed;
-    Texture2D CarImage;
 
-public: 
+class Vehicle {
+protected:
+    int speed;
+    Texture2D image;
+
+public:
     Vector2 position;
-    void draw();
-    void Update();
-    cars(float StartX, float StartY);
-    Rectangle GetRect();
+    virtual void draw() = 0;
+    virtual void Update() = 0;
+    virtual Rectangle GetRect() = 0;
+
+    virtual ~Vehicle() {}
 };
 
+class cars : public Vehicle {
+public: 
+    void draw() override;
+    void Update() override;
+    cars(float StartX, float StartY);
+    Rectangle GetRect() override;
+};
 
-class bike
-{
-    int BikeSpeed;
-    Texture2D BikeImage;
-    
-
-  public:
-    Vector2 position;
-    void draw();
+class bike : public Vehicle {
+public:
+    void draw() override;
     bike();
     void MoveLeft();
     void MoveRight();
-    Rectangle GetRect();
+    Rectangle GetRect() override;
+    void Update() override; 
 };
 
 class Game{
@@ -45,18 +50,16 @@ public:
 };
 
 // cars functions definitions
-
-
 cars :: cars(float StartX, float StartY)
 {
-    CarImage = LoadTexture("graphics/car.png");
+    image = LoadTexture("graphics/car.png");
     position = {StartX, StartY};
-    CarSpeed = 7;
+    speed = 7;
 }
 
 void cars :: draw()
 {
-    DrawTexture(CarImage, position.x, position.y, WHITE);
+    DrawTexture(image, position.x, position.y, WHITE);
 }
 
 void cars :: Update()
@@ -69,56 +72,59 @@ void cars :: Update()
     }
     else if(IsKeyDown(KEY_SPACE))
     {
-        position.y += CarSpeed + 4;
+        position.y += speed + 4;
     }
     else
     {
-        position.y += CarSpeed;
+        position.y += speed;
     }
 }
 
 Rectangle cars :: GetRect()
-    {
-        return{position.x, position.y, (float)CarImage.width, (float)CarImage.height};
-    }
+{
+    return{position.x, position.y, (float)image.width, (float)image.height};
+}
 
 // bike definitions
-
 bike :: bike()
 {
-    BikeImage = LoadTexture("graphics/bike-1.png");
-    BikeSpeed = 5;
+    image = LoadTexture("graphics/bike-1.png");
+    speed = 5;
     position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
 }
 
 void bike :: draw()
 {
-    DrawTexture(BikeImage, position.x, position.y, WHITE);
+    DrawTexture(image, position.x, position.y, WHITE);
+}
+
+void bike :: Update()
+{
+    
 }
 
 void bike :: MoveLeft()
 {
     if(position.x > 30)
     {
-      position.x -= BikeSpeed;
+      position.x -= speed;
     }
 }
 
 void bike :: MoveRight()
 {
-    if(position.x < GetScreenWidth() - BikeImage.width - 30)
+    if(position.x < GetScreenWidth() - image.width - 30)
     {
-      position.x += BikeSpeed;
+      position.x += speed;
     }
 }
 
 Rectangle bike :: GetRect()
 {
-    return {position.x, position.y, (float)BikeImage.width, (float)BikeImage.height};
+    return {position.x, position.y, (float)image.width, (float)image.height};
 }
 
-
-// game fucntions definitions
+// game functions definitions
 Game :: Game()
 {
     carList.push_back(cars(100, -135));
