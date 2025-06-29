@@ -96,6 +96,15 @@ bike :: bike()
 void bike :: draw()
 {
     DrawTexture(image, position.x, position.y, WHITE);
+    if(IsKeyDown(KEY_SPACE))
+    {
+        image = LoadTexture("graphics/bike-2.png");
+    }
+    else
+    {
+        image = LoadTexture("graphics/bike-1.png");
+
+    }
 }
 
 void bike :: Update()
