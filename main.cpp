@@ -3,6 +3,7 @@
 #include<vector>
 using namespace std;
 
+bool backgroundChanged = false;
 
 class Vehicle {
 protected:
@@ -66,7 +67,18 @@ void cars :: Update()
 {
     if(position.y > GetScreenHeight())
     {
-        int RandomIndex = GetRandomValue(30, GetScreenWidth() - 50);
+        int RandomIndex;
+
+        if(backgroundChanged)
+        {
+            RandomIndex = GetRandomValue(85, GetScreenWidth() - 128);
+        }
+
+        else
+        {
+         RandomIndex = GetRandomValue(30, GetScreenWidth() - 50);
+        }
+
         position.y = -100;
         position.x = RandomIndex;
     }
@@ -133,17 +145,37 @@ void bike :: Update()
 
 void bike :: MoveLeft()
 {
-    if(position.x > 30)
+    if(backgroundChanged)
     {
-      position.x -= speed;
+        if(position.x > 87)
+        {
+          position.x -= speed;
+        }
+    }
+    else
+    {
+        if(position.x > 30)
+        {
+          position.x -= speed;
+        }
     }
 }
 
 void bike :: MoveRight()
 {
-    if(position.x < GetScreenWidth() - image.width - 30)
+    if(backgroundChanged)
     {
-      position.x += speed;
+        if(position.x < GetScreenWidth() - image.width - 87)
+        {
+          position.x += speed;
+        }
+    }
+    else
+    {
+        if(position.x < GetScreenWidth() - image.width - 30)
+        {
+          position.x += speed;
+        }
     }
 }
 
@@ -218,12 +250,17 @@ int main() {
     int screenHeight = 650;
     Vector2 bgpos = {-350,-600};
     InitWindow(screenWidth, screenHeight, "SpeedRush 2D");
-    Texture2D background = LoadTexture("graphics/road.png");
+    Texture2D background1 = LoadTexture("graphics/road-1.png");
+    Texture2D background2 = LoadTexture("graphics/desert.png");
+    Texture2D background = background1;
+
     InitAudioDevice();  
     Sound Bike = LoadSound("sounds/race.wav");
     Sound GameOver = LoadSound("sounds/game_over.wav");
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
+
+    int score = 0;
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -249,6 +286,7 @@ int main() {
 
         else if (currentState == PLAYING) 
         {   
+            score++;
             if(IsKeyDown(KEY_SPACE))
             {
                 bgpos.y += 9;  
@@ -285,6 +323,9 @@ int main() {
             {
                 currentState = MENU;
                 game.Reset();
+                background = background1;
+                backgroundChanged = false;
+                score = 0;
             }
             if(IsKeyPressed(KEY_N))
             {
@@ -304,8 +345,14 @@ int main() {
             ClearBackground(WHITE);
             DrawTexture(menuPage, 0, 10, WHITE);
         }
+
         else if (currentState == PLAYING) 
         {
+            if(score > 200 && !backgroundChanged)
+            {
+                background = background2;
+                backgroundChanged = true;
+            }
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.25f));
@@ -332,6 +379,8 @@ int main() {
     }
 
     UnloadTexture(background);
+    UnloadTexture(background1);
+    UnloadTexture(background2);
     UnloadSound(Bike);
     UnloadSound(GameOver);
     CloseAudioDevice();
