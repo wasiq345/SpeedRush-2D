@@ -95,7 +95,27 @@ bike :: bike()
 
 void bike :: draw()
 {
-    DrawTexture(image, position.x, position.y, WHITE);
+    float rotation = 0;
+
+    if(IsKeyDown(KEY_LEFT))
+    {
+     rotation = -8;
+    }
+
+    if(IsKeyDown(KEY_RIGHT))
+    { 
+        rotation = 8;
+    }
+    
+    if(IsKeyDown(KEY_SPACE))
+    {
+        DrawTextureEx(image, position, rotation, 1.0f, YELLOW);
+    }
+    else
+    {
+        DrawTextureEx(image, position, rotation, 1.0f, WHITE);
+    }
+    
     if(IsKeyDown(KEY_SPACE))
     {
         image = LoadTexture("graphics/bike-2.png");
@@ -103,7 +123,6 @@ void bike :: draw()
     else
     {
         image = LoadTexture("graphics/bike-1.png");
-
     }
 }
 
@@ -205,6 +224,8 @@ int main() {
     Sound GameOver = LoadSound("sounds/game_over.wav");
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
+
+    bool Endbikeaudio;
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -229,10 +250,10 @@ int main() {
         }
 
         else if (currentState == PLAYING) 
-            {
+        {   
             if(IsKeyDown(KEY_SPACE))
             {
-                bgpos.y += 9;
+                bgpos.y += 9;  
             }
             else
             {
@@ -288,7 +309,17 @@ int main() {
         {
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
-            DrawText("space to boost", 150, GetScreenHeight() - 40, 14, SKYBLUE);
+
+            if(IsKeyDown(KEY_SPACE))
+            {
+                DrawText("space to boost", 150, GetScreenHeight() - 40, 14, RED);
+            }
+
+            else
+            {
+                DrawText("space to boost", 150, GetScreenHeight() - 40, 14, SKYBLUE);
+            }
+
             game.Draw();
         }
         else if (currentState == GAME_OVER) 
