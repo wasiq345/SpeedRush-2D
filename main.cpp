@@ -99,12 +99,12 @@ void bike :: draw()
 
     if(IsKeyDown(KEY_LEFT))
     {
-     rotation = -8;
+        rotation = -9;
     }
 
     if(IsKeyDown(KEY_RIGHT))
     { 
-        rotation = 8;
+        rotation = 9;
     }
     
     if(IsKeyDown(KEY_SPACE))
@@ -224,8 +224,6 @@ int main() {
     Sound GameOver = LoadSound("sounds/game_over.wav");
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
-
-    bool Endbikeaudio;
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -272,7 +270,7 @@ int main() {
             {
                 PlaySound(Bike);  
             }
-            
+
             if(game.End()) 
             {
                 currentState = GAME_OVER;
@@ -280,6 +278,7 @@ int main() {
                 StopSound(Bike);
             }
         }
+
         else if (currentState == GAME_OVER) 
         {
             if (IsKeyPressed(KEY_Y)) 
@@ -309,10 +308,11 @@ int main() {
         {
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
+            DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.25f));
 
             if(IsKeyDown(KEY_SPACE))
             {
-                DrawText("space to boost", 150, GetScreenHeight() - 40, 14, RED);
+                DrawText("boost active", 158, GetScreenHeight() - 40, 14, RED);
             }
 
             else
