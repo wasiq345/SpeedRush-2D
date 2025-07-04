@@ -49,6 +49,7 @@ public:
     bool End();
     void Reset();
     int score =0;
+    bool newMapSoundPlayed = false;
 };
 
 // cars functions definitions
@@ -148,14 +149,14 @@ void bike :: MoveLeft()
 {
     if(backgroundChanged)
     {
-        if(position.x > 87)
+        if(position.x > 91)
         {
           position.x -= speed;
         }
     }
     else
     {
-        if(position.x > 30)
+        if(position.x > 35)
         {
           position.x -= speed;
         }
@@ -166,14 +167,15 @@ void bike :: MoveRight()
 {
     if(backgroundChanged)
     {
-        if(position.x < GetScreenWidth() - image.width - 87)
+        if(position.x < GetScreenWidth() - image.width - 91)
         {
           position.x += speed;
         }
     }
+
     else
     {
-        if(position.x < GetScreenWidth() - image.width - 30)
+        if(position.x < GetScreenWidth() - image.width - 35)
         {
           position.x += speed;
         }
@@ -205,18 +207,16 @@ void Game :: update()
 void Game :: Draw()
 {
     b1.draw();
+
     for(int i=0; i < carList.size(); i++)
     {
         carList[i].draw();
     } 
-    
-    
 
-   
-    DrawRectangle(20, 20, 113, 40, BLACK);
-    DrawRectangleLines(20, 20, 113, 40, WHITE);
+    DrawRectangle(20, 20, 118, 30, BLACK);
+    DrawRectangleLines(20, 20, 118, 30, WHITE);
 
-    DrawText(TextFormat("Score: %d", score/10), 30, 30, 20, WHITE);
+    DrawText(TextFormat("Score: %d", score/10), 30, 27, 15, SKYBLUE);
 
 }
 void Game :: InputHandling()
@@ -253,6 +253,7 @@ void Game :: Reset()
     carList.push_back(cars(300, -655));
     gameEnded = false;
     score = 0;
+    newMapSoundPlayed = false;
 }
 
 int main() {
@@ -267,10 +268,9 @@ int main() {
     InitAudioDevice();  
     Sound Bike = LoadSound("sounds/race.wav");
     Sound GameOver = LoadSound("sounds/game_over.wav");
+    Sound NewMap = LoadSound("sounds/new-map.wav");
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
-
-    
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -297,10 +297,12 @@ int main() {
         else if (currentState == PLAYING) 
         {   
             game.score++;
+
             if(IsKeyDown(KEY_SPACE))
             {
                 bgpos.y += 9;  
             }
+
             else
             {
                 bgpos.y += 5;
@@ -358,14 +360,31 @@ int main() {
 
         else if (currentState == PLAYING) 
         {
-            if(game.score > 200 && !backgroundChanged)
+            if(game.score > 150*10 && !backgroundChanged)
             {
                 background = background2;
                 backgroundChanged = true;
+
+                if(!game.newMapSoundPlayed)
+                {
+                    PlaySound(NewMap);
+                    game.newMapSoundPlayed = true;
+                }
             }
+
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.25f));
+
+            if(!backgroundChanged && game.score/10 < 150)
+             {
+                DrawText("Reach 150 to unlock Desert", 25, 60, 11, ORANGE);
+            }
+
+            else if(backgroundChanged)
+            {
+                DrawText("DESERT UNLOCKED!", 24, 60, 12, ORANGE);
+            }
 
             if(IsKeyDown(KEY_SPACE))
             {
@@ -383,6 +402,13 @@ int main() {
         {
              ClearBackground(WHITE);
              DrawTexture(gameOver, 0, 0, WHITE);
+             DrawRectangle(GetScreenWidth()/2 - 90, 65, 180, 3, GOLD);
+             DrawRectangle(GetScreenWidth()/2 - 90, 95, 180, 3, GOLD);
+            
+             DrawCircle(GetScreenWidth()/2 - 95, 80, 5, GOLD);
+             DrawCircle(GetScreenWidth()/2 + 95, 80, 5, GOLD);
+             DrawText(TextFormat("Score: %d", game.score/10), 
+             GetScreenWidth()/2 - 52, 72, 20, SKYBLUE);
         }
         
         EndDrawing();
@@ -393,6 +419,7 @@ int main() {
     UnloadTexture(background2);
     UnloadSound(Bike);
     UnloadSound(GameOver);
+    UnloadSound(NewMap);
     CloseAudioDevice();
     CloseWindow();
     
