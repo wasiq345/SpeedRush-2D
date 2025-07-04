@@ -48,6 +48,7 @@ public:
     void update();
     bool End();
     void Reset();
+    int score =0;
 };
 
 // cars functions definitions
@@ -206,10 +207,18 @@ void Game :: Draw()
     b1.draw();
     for(int i=0; i < carList.size(); i++)
     {
-    carList[i].draw();
+        carList[i].draw();
     } 
-}
+    
+    
 
+   
+    DrawRectangle(20, 20, 113, 40, BLACK);
+    DrawRectangleLines(20, 20, 113, 40, WHITE);
+
+    DrawText(TextFormat("Score: %d", score/10), 30, 30, 20, WHITE);
+
+}
 void Game :: InputHandling()
 {
     if(IsKeyDown(KEY_RIGHT))
@@ -243,6 +252,7 @@ void Game :: Reset()
     carList.push_back(cars(250, -510));
     carList.push_back(cars(300, -655));
     gameEnded = false;
+    score = 0;
 }
 
 int main() {
@@ -260,7 +270,7 @@ int main() {
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
 
-    int score = 0;
+    
     
     enum GameState { MENU, PLAYING, GAME_OVER };
     GameState currentState = MENU;
@@ -286,7 +296,7 @@ int main() {
 
         else if (currentState == PLAYING) 
         {   
-            score++;
+            game.score++;
             if(IsKeyDown(KEY_SPACE))
             {
                 bgpos.y += 9;  
@@ -325,7 +335,7 @@ int main() {
                 game.Reset();
                 background = background1;
                 backgroundChanged = false;
-                score = 0;
+                
             }
             if(IsKeyPressed(KEY_N))
             {
@@ -348,7 +358,7 @@ int main() {
 
         else if (currentState == PLAYING) 
         {
-            if(score > 200 && !backgroundChanged)
+            if(game.score > 200 && !backgroundChanged)
             {
                 background = background2;
                 backgroundChanged = true;
