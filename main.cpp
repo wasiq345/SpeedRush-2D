@@ -53,7 +53,9 @@ public:
     int GetSpeed();
 };
 
-class Shop {
+class Shop 
+{
+    Texture2D shopMenu;
 public:
     Shop();
     void Draw(BikeType selectedBike);
@@ -249,17 +251,17 @@ Rectangle bike :: GetRect()
 // Shop class definitions
 Shop :: Shop()
 {
+    shopMenu = LoadTexture("graphics/shop-menu.png");
     
 }
 
 void Shop :: Draw(BikeType selectedBike)
 {
     ClearBackground(DARKBLUE);
-    
-    DrawText("BIKE SHOP", GetScreenWidth()/2 - 60, 50, 24, GOLD);
-    DrawRectangle(GetScreenWidth()/2 - 80, 80, 160, 3, GOLD);
-    
+
+    DrawTexture(shopMenu, 0, 0, WHITE);
     Color scootyColor;
+
     if(selectedBike == SCOOTY)
     {
         scootyColor = GREEN;
@@ -269,30 +271,37 @@ void Shop :: Draw(BikeType selectedBike)
         scootyColor = DARKGRAY;
     }
 
-    DrawRectangle(50, 120, 290, 80, scootyColor);
-    DrawRectangleLines(50, 120, 290, 80, WHITE);
-    DrawText("SCOOTY", 60, 130, 20, SKYBLUE);
-    DrawText("Speed: 5", 60, 155, 16, WHITE);
+    DrawRectangle(50, 190, 290, 80, scootyColor);
+    DrawRectangleLines(50, 190, 290, 80, WHITE);
+    DrawText("SCOOTY", 60, 200, 20, SKYBLUE);
+    DrawText("Speed: 5", 60, 230, 16, WHITE);
 
     if(selectedBike == SCOOTY)
     {
-        DrawText("SELECTED", 220, 155, 16, YELLOW);
+        DrawText("SELECTED", 220, 200, 16, YELLOW);
     }
     
-    Color ninjaColor = (selectedBike == NINJA_H2R) ? GREEN : DARKGRAY;
-    DrawRectangle(50, 220, 290, 80, ninjaColor);
-    DrawRectangleLines(50, 220, 290, 80, WHITE);
-    DrawText("NINJA H2R", 60, 230, 20, SKYBLUE);
-    DrawText("Speed: 7", 60, 255, 16, WHITE);
+    Color ninjaColor;
 
     if(selectedBike == NINJA_H2R)
     {
-        DrawText("SELECTED", 220, 255, 16, YELLOW);
+        ninjaColor = GREEN;
     }
-    
-    DrawText("Press 1 to select Scooty", 50, 350, 16, WHITE);
-    DrawText("Press 2 to select Ninja H2R", 50, 375, 16, WHITE);
-    DrawText("Press Enter to return to menu", 50, 425, 16, WHITE);
+
+    else
+    {
+        ninjaColor = DARKGRAY;
+    }
+
+    DrawRectangle(50, 300, 290, 80, ninjaColor);
+    DrawRectangleLines(50, 300, 290, 80, WHITE);
+    DrawText("NINJA H2R", 60, 310, 20, SKYBLUE);
+    DrawText("Speed: 7", 60, 340, 16, WHITE);
+
+    if(selectedBike == NINJA_H2R)
+    {
+        DrawText("SELECTED", 220, 320, 16, YELLOW);
+    }
 }
 
 bool Shop :: HandleInput(BikeType& currentBike)
