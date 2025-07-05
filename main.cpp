@@ -5,7 +5,10 @@ using namespace std;
 
 bool backgroundChanged = false;
 
-class Vehicle {
+enum BikeType {SCOOTY, NINJA_H2R};
+
+class Vehicle 
+{
 protected:
     int speed;
     Texture2D image;
@@ -19,7 +22,8 @@ public:
     virtual ~Vehicle() {}
 };
 
-class cars : public Vehicle {
+class cars : public Vehicle
+{
 public: 
     void draw() override;
     void Update() override;
@@ -27,9 +31,16 @@ public:
     Rectangle GetRect() override;
 };
 
-class bike : public Vehicle {
+class bike : public Vehicle 
+{
     Texture2D normalBike;
     Texture2D boostBike;
+    BikeType currentBike;
+    Texture2D normalScooty;
+    Texture2D boostScooty;
+    Texture2D normalNinja;
+    Texture2D boostNinja;
+    
 public:
     void draw() override;
     bike();
@@ -37,6 +48,16 @@ public:
     void MoveRight();
     Rectangle GetRect() override;
     void Update() override; 
+    void SetBike(BikeType bikeType);
+    BikeType GetCurrentBike();
+    int GetSpeed();
+};
+
+class Shop {
+public:
+    Shop();
+    void Draw(BikeType selectedBike);
+    bool HandleInput(BikeType& currentBike);
 };
 
 class Game{
@@ -44,14 +65,16 @@ class Game{
 public: 
     bike b1;
     vector<cars> carList; 
+    Shop shop;
     Game();
     void InputHandling();
     void Draw();
     void update();
     bool End();
     void Reset();
-    int score =0;
+    int score = 0;
     bool newMapSoundPlayed = false;
+    BikeType selectedBike = SCOOTY;
 };
 
 // cars functions definitions
@@ -77,7 +100,6 @@ void cars :: Update()
         {
             RandomIndex = GetRandomValue(85, GetScreenWidth() - 128);
         }
-
         else
         {
          RandomIndex = GetRandomValue(30, GetScreenWidth() - 50);
@@ -104,10 +126,35 @@ Rectangle cars :: GetRect()
 // bike definitions
 bike :: bike()
 {
-    normalBike = LoadTexture("graphics/bike-1.png");
-    boostBike = LoadTexture("graphics/bike-2.png");
-    speed = 5;
+    normalScooty = LoadTexture("graphics/scooty.png");
+    boostScooty = LoadTexture("graphics/boost-scooty.png");
+    
+    normalNinja = LoadTexture("graphics/bike.png");
+    boostNinja = LoadTexture("graphics/boost-bike.png");
+    
+    currentBike = SCOOTY;
+    SetBike(SCOOTY);
     position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
+}
+
+void bike :: SetBike(BikeType bikeType)
+{
+    currentBike = bikeType;
+    
+    if(bikeType == SCOOTY)
+    {
+        normalBike = normalScooty;
+        boostBike = boostScooty;
+        speed = 5;
+    }
+    else if(bikeType == NINJA_H2R)
+    {
+        normalBike = normalNinja;
+        boostBike = boostNinja;
+        speed = 7; 
+    }
+    
+    image = normalBike;
 }
 
 void bike :: draw()
@@ -130,7 +177,7 @@ void bike :: draw()
     }
     else
     {
-        DrawTextureEx(image, position, rotation, 1.0f, WHITE);
+        DrawTextureEx(image, position, rotation, 1.0f, YELLOW);
     }
     
     if(IsKeyDown(KEY_SPACE))
@@ -175,7 +222,6 @@ void bike :: MoveRight()
           position.x += speed;
         }
     }
-
     else
     {
         if(position.x < GetScreenWidth() - image.width - 35)
@@ -185,9 +231,85 @@ void bike :: MoveRight()
     }
 }
 
+BikeType bike ::  GetCurrentBike() 
+{
+     return currentBike; 
+}
+
+int bike :: GetSpeed()
+{
+    return speed; 
+}
+
 Rectangle bike :: GetRect()
 {
     return {position.x, position.y, (float)image.width, (float)image.height};
+}
+
+// Shop class definitions
+Shop :: Shop()
+{
+    
+}
+
+void Shop :: Draw(BikeType selectedBike)
+{
+    ClearBackground(DARKBLUE);
+    
+    DrawText("BIKE SHOP", GetScreenWidth()/2 - 60, 50, 24, GOLD);
+    DrawRectangle(GetScreenWidth()/2 - 80, 80, 160, 3, GOLD);
+    
+    Color scootyColor;
+    if(selectedBike == SCOOTY)
+    {
+        scootyColor = GREEN;
+    }
+    else
+    {
+        scootyColor = DARKGRAY;
+    }
+
+    DrawRectangle(50, 120, 290, 80, scootyColor);
+    DrawRectangleLines(50, 120, 290, 80, WHITE);
+    DrawText("SCOOTY", 60, 130, 20, SKYBLUE);
+    DrawText("Speed: 5", 60, 155, 16, WHITE);
+
+    if(selectedBike == SCOOTY)
+    {
+        DrawText("SELECTED", 220, 155, 16, YELLOW);
+    }
+    
+    Color ninjaColor = (selectedBike == NINJA_H2R) ? GREEN : DARKGRAY;
+    DrawRectangle(50, 220, 290, 80, ninjaColor);
+    DrawRectangleLines(50, 220, 290, 80, WHITE);
+    DrawText("NINJA H2R", 60, 230, 20, SKYBLUE);
+    DrawText("Speed: 7", 60, 255, 16, WHITE);
+
+    if(selectedBike == NINJA_H2R)
+    {
+        DrawText("SELECTED", 220, 255, 16, YELLOW);
+    }
+    
+    DrawText("Press 1 to select Scooty", 50, 350, 16, WHITE);
+    DrawText("Press 2 to select Ninja H2R", 50, 375, 16, WHITE);
+    DrawText("Press Enter to return to menu", 50, 425, 16, WHITE);
+}
+
+bool Shop :: HandleInput(BikeType& currentBike)
+{
+    if(IsKeyPressed(KEY_ONE))
+    {
+        currentBike = SCOOTY;
+        return true;
+    }
+    
+    if(IsKeyPressed(KEY_TWO))
+    {
+        currentBike = NINJA_H2R;
+        return true;
+    }
+    
+    return false;
 }
 
 // game functions definitions
@@ -218,10 +340,22 @@ void Game :: Draw()
 
     DrawRectangle(20, 20, 118, 30, BLACK);
     DrawRectangleLines(20, 20, 118, 30, WHITE);
-
     DrawText(TextFormat("Score: %d", score/10), 30, 27, 15, SKYBLUE);
-
+    
+    string bikeText;
+    if(selectedBike == SCOOTY)
+    {
+        bikeText = "Scooty";
+    }
+    else
+    {
+        bikeText = "Ninja H2R";
+    }
+    DrawRectangle(260, 24, 118, 30, BLACK);
+    DrawRectangleLines(260, 24, 118, 30, GREEN);
+    DrawText(bikeText.c_str(), 300, 32, 13, GREEN);
 }
+
 void Game :: InputHandling()
 {
     if(IsKeyDown(KEY_RIGHT))
@@ -249,6 +383,7 @@ bool Game :: End()
 void Game :: Reset()
 {
     b1.position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
+    b1.SetBike(selectedBike); 
     carList.clear();
     carList.push_back(cars(100, -135));
     carList.push_back(cars(175, -320));
@@ -266,6 +401,8 @@ int main() {
     InitWindow(screenWidth, screenHeight, "SpeedRush 2D");
     Texture2D background1 = LoadTexture("graphics/road-1.png");
     Texture2D background2 = LoadTexture("graphics/desert.png");
+    Texture2D menuPage = LoadTexture("graphics/menu-page.png");
+    Texture2D gameOver = LoadTexture("graphics/game_over.png");
     Texture2D background = background1;
 
     InitAudioDevice();  
@@ -273,17 +410,15 @@ int main() {
     Sound GameOver = LoadSound("sounds/game_over.wav");
     Sound NewMap = LoadSound("sounds/new-map.wav");
     Sound buttonPressed = LoadSound("sounds/beep.wav");
-    Texture2D menuPage = LoadTexture("graphics/menu_page.png");
-    Texture2D gameOver = LoadTexture("graphics/game_over.png");
     
-    enum GameState { MENU, PLAYING, GAME_OVER };
+    enum GameState { MENU, PLAYING, GAME_OVER, SHOP};
     GameState currentState = MENU;
     
     Game game;
     SetTargetFPS(60);
     
-    while (!WindowShouldClose()) {
-        
+    while (!WindowShouldClose()) 
+    {   
         if (currentState == MENU) {
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
             {
@@ -297,6 +432,26 @@ int main() {
             {
                 break;
             }
+
+            if(IsKeyPressed(KEY_S))
+            {
+                PlaySound(buttonPressed);
+                currentState = SHOP;
+            }
+        }
+        
+        else if (currentState == SHOP)
+        {
+            if(game.shop.HandleInput(game.selectedBike))
+            {
+                PlaySound(buttonPressed);
+            }
+            
+            if(IsKeyPressed(KEY_ENTER))
+            {
+                PlaySound(buttonPressed);
+                currentState = MENU;
+            }
         }
 
         else if (currentState == PLAYING) 
@@ -307,7 +462,6 @@ int main() {
             {
                 bgpos.y += 9;  
             }
-
             else
             {
                 bgpos.y += 5;
@@ -343,7 +497,6 @@ int main() {
                 game.Reset();
                 background = background1;
                 backgroundChanged = false;
-                
             }
             if(IsKeyPressed(KEY_N))
             {
@@ -362,6 +515,11 @@ int main() {
         {
             ClearBackground(WHITE);
             DrawTexture(menuPage, 0, 10, WHITE);
+        }
+        
+        else if (currentState == SHOP)
+        {
+            game.shop.Draw(game.selectedBike);
         }
 
         else if (currentState == PLAYING) 
@@ -386,7 +544,6 @@ int main() {
              {
                 DrawText("Reach 150 to unlock Desert", 25, 60, 11, ORANGE);
             }
-
             else if(backgroundChanged)
             {
                 DrawText("DESERT UNLOCKED!", 24, 60, 12, ORANGE);
@@ -396,7 +553,6 @@ int main() {
             {
                 DrawText("boost active", 158, GetScreenHeight() - 40, 14, RED);
             }
-
             else
             {
                 DrawText("space to boost", 150, GetScreenHeight() - 40, 14, SKYBLUE);
