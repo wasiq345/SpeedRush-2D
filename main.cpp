@@ -28,6 +28,8 @@ public:
 };
 
 class bike : public Vehicle {
+    Texture2D normalBike;
+    Texture2D boostBike;
 public:
     void draw() override;
     bike();
@@ -102,7 +104,8 @@ Rectangle cars :: GetRect()
 // bike definitions
 bike :: bike()
 {
-    image = LoadTexture("graphics/bike-1.png");
+    normalBike = LoadTexture("graphics/bike-1.png");
+    boostBike = LoadTexture("graphics/bike-2.png");
     speed = 5;
     position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
 }
@@ -132,11 +135,11 @@ void bike :: draw()
     
     if(IsKeyDown(KEY_SPACE))
     {
-        image = LoadTexture("graphics/bike-2.png");
+        image = boostBike;
     }
     else
     {
-        image = LoadTexture("graphics/bike-1.png");
+        image = normalBike;
     }
 }
 
@@ -269,6 +272,7 @@ int main() {
     Sound Bike = LoadSound("sounds/race.wav");
     Sound GameOver = LoadSound("sounds/game_over.wav");
     Sound NewMap = LoadSound("sounds/new-map.wav");
+    Sound buttonPressed = LoadSound("sounds/beep.wav");
     Texture2D menuPage = LoadTexture("graphics/menu_page.png");
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
     
@@ -283,6 +287,7 @@ int main() {
         if (currentState == MENU) {
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
             {
+                PlaySound(buttonPressed);
                 currentState = PLAYING;
                 game.Reset();
                 PlaySound(Bike);
@@ -333,6 +338,7 @@ int main() {
         {
             if (IsKeyPressed(KEY_Y)) 
             {
+                PlaySound(buttonPressed);
                 currentState = MENU;
                 game.Reset();
                 background = background1;
@@ -420,6 +426,7 @@ int main() {
     UnloadSound(Bike);
     UnloadSound(GameOver);
     UnloadSound(NewMap);
+    UnloadSound(buttonPressed);
     CloseAudioDevice();
     CloseWindow();
     
