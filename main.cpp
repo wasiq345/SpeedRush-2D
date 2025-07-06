@@ -405,7 +405,7 @@ void Game :: Reset()
     newMapSoundPlayed = false;
     IsNewHighScore = false;
 }
-
+bool isPaused =false;
 int main() {
     int screenWidth = 390;
     int screenHeight = 650;
@@ -430,8 +430,17 @@ int main() {
     SetTargetFPS(60);
     
     while (!WindowShouldClose()) 
-    {   
-        if (currentState == MENU) {
+    {
+        if (IsKeyPressed(KEY_P)) {
+    isPaused = !isPaused;
+
+    if (isPaused) {
+        PauseSound(Bike); 
+    } else {
+        ResumeSound(Bike); 
+    }
+}
+            if (currentState == MENU) {
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
             {
                 PlaySound(buttonPressed);
@@ -466,46 +475,49 @@ int main() {
             }
         }
 
-        else if (currentState == PLAYING) 
-        {   
-            if(IsKeyDown(KEY_SPACE))
-            {
-                game.score+=2;
-            }
-            else
-            {
-                game.score++;
-            }
-
-            if(IsKeyDown(KEY_SPACE))
-            {
-                bgpos.y += 9;  
-            }
-            else
-            {
-                bgpos.y += 5;
-            }
-
-            if(bgpos.y > GetScreenHeight() - 600)
-            {
-                bgpos.y = -600;
-            }
-
-            game.InputHandling();
-            game.update();
-            
-            if (!IsSoundPlaying(Bike))
-            {
-                PlaySound(Bike);  
-            }
-
-            if(game.End()) 
-            {
-                currentState = GAME_OVER;
-                PlaySound(GameOver);
-                StopSound(Bike);
-            }
+          else if (currentState == PLAYING) 
+{
+    if (!isPaused)
+    {
+        if(IsKeyDown(KEY_SPACE))
+        {
+            game.score+=2;
         }
+        else
+        {
+            game.score++;
+        }
+
+        if(IsKeyDown(KEY_SPACE))
+        {
+            bgpos.y += 9;  
+        }
+        else
+        {
+            bgpos.y += 5;
+        }
+
+        if(bgpos.y > GetScreenHeight() - 600)
+        {
+            bgpos.y = -600;
+        }
+
+        game.InputHandling();
+        game.update();
+
+        if (!IsSoundPlaying(Bike))
+        {
+            PlaySound(Bike);  
+        }
+
+        if(game.End()) 
+        {
+            currentState = GAME_OVER;
+            PlaySound(GameOver);
+            StopSound(Bike);
+        }
+    }
+}
 
         else if (currentState == GAME_OVER) 
         {
@@ -558,6 +570,10 @@ int main() {
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.25f));
+            if (isPaused)
+    {
+        DrawText("PAUSED", GetScreenWidth()/2 - 50, GetScreenHeight()/2 - 10, 30, WHITE);
+    }
 
             if(!backgroundChanged && game.score/10 < 150)
              {
@@ -567,6 +583,7 @@ int main() {
             {
                 DrawText("DESERT UNLOCKED!", 24, 60, 12, ORANGE);
             }
+            DrawText("Press P to pause", 25, 80, 11, LIGHTGRAY);
 
             if(IsKeyDown(KEY_SPACE))
             {
