@@ -4,7 +4,6 @@
 using namespace std;
 
 bool backgroundChanged = false;
-
 enum BikeType {SCOOTY, NINJA_H2R};
 
 class Vehicle 
@@ -257,8 +256,6 @@ Shop :: Shop()
 
 void Shop :: Draw(BikeType selectedBike)
 {
-    ClearBackground(DARKBLUE);
-
     DrawTexture(shopMenu, 0, 0, WHITE);
     Color scootyColor;
 
@@ -348,10 +345,11 @@ void Game :: Draw()
     } 
 
     DrawRectangle(20, 20, 118, 30, BLACK);
-    DrawRectangleLines(20, 20, 118, 30, WHITE);
+    DrawRectangleLines(20, 20, 118, 30, SKYBLUE);
     DrawText(TextFormat("Score: %d", score/10), 30, 27, 15, SKYBLUE);
     
     string bikeText;
+    
     if(selectedBike == SCOOTY)
     {
         bikeText = "Scooty";
@@ -465,7 +463,14 @@ int main() {
 
         else if (currentState == PLAYING) 
         {   
-            game.score++;
+            if(IsKeyDown(KEY_SPACE))
+            {
+                game.score+=2;
+            }
+            else
+            {
+                game.score++;
+            }
 
             if(IsKeyDown(KEY_SPACE))
             {
