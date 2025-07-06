@@ -1,7 +1,6 @@
 #include <raylib.h>
-#include <iostream>
 #include<vector>
-using namespace std;
+#include "HighScore.cpp"
 
 bool backgroundChanged = false;
 enum BikeType {SCOOTY, NINJA_H2R};
@@ -67,6 +66,7 @@ public:
     bike b1;
     vector<cars> carList; 
     Shop shop;
+    HighScore ScoreManager;
     Game();
     void InputHandling();
     void Draw();
@@ -75,6 +75,7 @@ public:
     void Reset();
     int score = 0;
     bool newMapSoundPlayed = false;
+    bool IsNewHighScore = false;
     BikeType selectedBike = SCOOTY;
 };
 
@@ -382,6 +383,9 @@ bool Game :: End()
         if(CheckCollisionRecs(b1.GetRect(), carList[i].GetRect()))
         {
             gameEnded = true;
+            int finalScore = score / 10;
+            IsNewHighScore = ScoreManager.IsNewHighScore(finalScore);
+            ScoreManager.CheckScore(finalScore);
         }
     }
    return gameEnded;
@@ -399,6 +403,7 @@ void Game :: Reset()
     gameEnded = false;
     score = 0;
     newMapSoundPlayed = false;
+    IsNewHighScore = false;
 }
 
 int main() {
@@ -578,13 +583,20 @@ int main() {
         {
              ClearBackground(WHITE);
              DrawTexture(gameOver, 0, 0, WHITE);
-             DrawRectangle(GetScreenWidth()/2 - 90, 65, 180, 3, GOLD);
-             DrawRectangle(GetScreenWidth()/2 - 90, 95, 180, 3, GOLD);
+             DrawRectangle(GetScreenWidth()/2 - 90, 10, 180, 3, GOLD);
+             DrawRectangle(GetScreenWidth()/2 - 90, 40, 180, 3, GOLD);
             
-             DrawCircle(GetScreenWidth()/2 - 95, 80, 5, GOLD);
-             DrawCircle(GetScreenWidth()/2 + 95, 80, 5, GOLD);
+             DrawCircle(GetScreenWidth()/2 - 95, 26, 5, GOLD);
+             DrawCircle(GetScreenWidth()/2 + 95, 26, 5, GOLD);
              DrawText(TextFormat("Score: %d", game.score/10), 
-             GetScreenWidth()/2 - 52, 72, 20, SKYBLUE);
+             GetScreenWidth()/2 - 52, 16, 20, SKYBLUE);
+
+             DrawText(TextFormat("High Score: %d", game.ScoreManager.getHighScore()), 
+                      10, 100, 18, GOLD);
+             if(game.IsNewHighScore)
+             {
+                 DrawText("NEW HIGH SCORE!", 10, 70, 16, RED);
+             }
         }
         
         EndDrawing();
