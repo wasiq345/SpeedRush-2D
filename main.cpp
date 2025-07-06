@@ -3,6 +3,7 @@
 #include "HighScore.cpp"
 
 bool backgroundChanged = false;
+bool isPaused = false;
 enum BikeType {SCOOTY, NINJA_H2R};
 
 class Vehicle 
@@ -163,12 +164,12 @@ void bike :: draw()
 {
     float rotation = 0;
 
-    if(IsKeyDown(KEY_LEFT))
+    if(IsKeyDown(KEY_LEFT) && !isPaused)
     {
         rotation = -9;
     }
 
-    if(IsKeyDown(KEY_RIGHT))
+    if(IsKeyDown(KEY_RIGHT) && !isPaused)
     { 
         rotation = 9;
     }
@@ -177,16 +178,17 @@ void bike :: draw()
     {
         DrawTextureEx(image, position, rotation, 1.0f, YELLOW);
     }
-    else
+
+    else 
     {
         DrawTextureEx(image, position, rotation, 1.0f, YELLOW);
     }
     
-    if(IsKeyDown(KEY_SPACE))
+    if(IsKeyDown(KEY_SPACE) && !isPaused)
     {
         image = boostBike;
     }
-    else
+    else 
     {
         image = normalBike;
     }
@@ -405,7 +407,7 @@ void Game :: Reset()
     newMapSoundPlayed = false;
     IsNewHighScore = false;
 }
-bool isPaused =false;
+
 int main() {
     int screenWidth = 390;
     int screenHeight = 650;
@@ -431,16 +433,23 @@ int main() {
     
     while (!WindowShouldClose()) 
     {
-        if (IsKeyPressed(KEY_P)) {
-    isPaused = !isPaused;
+        if (IsKeyPressed(KEY_P)) 
+        {
+            isPaused = !isPaused;
+            PlaySound(buttonPressed);
 
-    if (isPaused) {
-        PauseSound(Bike); 
-    } else {
-        ResumeSound(Bike); 
-    }
-}
-            if (currentState == MENU) {
+            if (isPaused) 
+            {
+                PauseSound(Bike); 
+            } 
+            else 
+            {
+                ResumeSound(Bike); 
+            }
+        }
+            if (currentState == MENU) 
+            {
+
             if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
             {
                 PlaySound(buttonPressed);
@@ -475,49 +484,49 @@ int main() {
             }
         }
 
-          else if (currentState == PLAYING) 
-{
-    if (!isPaused)
+        else if (currentState == PLAYING) 
     {
-        if(IsKeyDown(KEY_SPACE))
+        if (!isPaused)
         {
-            game.score+=2;
-        }
-        else
-        {
-            game.score++;
-        }
+            if(IsKeyDown(KEY_SPACE))
+            {
+                game.score+=2;
+            }
+            else
+            {
+                game.score++;
+            }
 
-        if(IsKeyDown(KEY_SPACE))
-        {
-            bgpos.y += 9;  
-        }
-        else
-        {
-            bgpos.y += 5;
-        }
+            if(IsKeyDown(KEY_SPACE))
+            {
+                bgpos.y += 9;  
+            }
+            else
+            {
+                bgpos.y += 5;
+            }
 
-        if(bgpos.y > GetScreenHeight() - 600)
-        {
-            bgpos.y = -600;
-        }
+            if(bgpos.y > GetScreenHeight() - 600)
+            {
+                bgpos.y = -600;
+            }
 
-        game.InputHandling();
-        game.update();
+            game.InputHandling();
+            game.update();
 
-        if (!IsSoundPlaying(Bike))
-        {
-            PlaySound(Bike);  
-        }
+            if (!IsSoundPlaying(Bike))
+            {
+                PlaySound(Bike);  
+            }
 
-        if(game.End()) 
-        {
-            currentState = GAME_OVER;
-            PlaySound(GameOver);
-            StopSound(Bike);
+            if(game.End()) 
+            {
+                currentState = GAME_OVER;
+                PlaySound(GameOver);
+                StopSound(Bike);
+            }
         }
     }
-}
 
         else if (currentState == GAME_OVER) 
         {
@@ -529,10 +538,12 @@ int main() {
                 background = background1;
                 backgroundChanged = false;
             }
+
             if(IsKeyPressed(KEY_N))
             {
                 break;
             }
+
             if (IsKeyPressed(KEY_ESCAPE)) 
             {
                 break;
@@ -570,25 +581,29 @@ int main() {
             DrawTexture(background, -350, bgpos.y, WHITE);
             DrawTexture(background, -350, bgpos.y - GetScreenHeight(), WHITE);
             DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.25f));
+
             if (isPaused)
-    {
-        DrawText("PAUSED", GetScreenWidth()/2 - 50, GetScreenHeight()/2 - 10, 30, WHITE);
-    }
+            {
+                DrawText("PAUSED", GetScreenWidth()/2 - 50, GetScreenHeight()/2 - 10, 30, WHITE);
+            }
 
             if(!backgroundChanged && game.score/10 < 150)
-             {
+            {
                 DrawText("Reach 150 to unlock Desert", 25, 60, 11, ORANGE);
             }
+
             else if(backgroundChanged)
             {
                 DrawText("DESERT UNLOCKED!", 24, 60, 12, ORANGE);
             }
+
             DrawText("Press P to pause", 25, 80, 11, LIGHTGRAY);
 
-            if(IsKeyDown(KEY_SPACE))
+            if(IsKeyDown(KEY_SPACE) && !isPaused)
             {
                 DrawText("boost active", 158, GetScreenHeight() - 40, 14, RED);
             }
+
             else
             {
                 DrawText("space to boost", 150, GetScreenHeight() - 40, 14, SKYBLUE);
@@ -596,6 +611,7 @@ int main() {
 
             game.Draw();
         }
+
         else if (currentState == GAME_OVER) 
         {
              ClearBackground(WHITE);
@@ -610,6 +626,7 @@ int main() {
 
              DrawText(TextFormat("High Score: %d", game.ScoreManager.getHighScore()), 
                       10, 100, 18, GOLD);
+
              if(game.IsNewHighScore)
              {
                  DrawText("NEW HIGH SCORE!", 10, 70, 16, RED);
