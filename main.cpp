@@ -154,7 +154,7 @@ void bike :: SetBike(BikeType bikeType)
     {
         normalBike = normalNinja;
         boostBike = boostNinja;
-        speed = 7; 
+        speed = 6; 
     }
     
     image = normalBike;
@@ -166,12 +166,12 @@ void bike :: draw()
 
     if(IsKeyDown(KEY_LEFT) && !isPaused)
     {
-        rotation = -9;
+        rotation = -10;
     }
 
     if(IsKeyDown(KEY_RIGHT) && !isPaused)
     { 
-        rotation = 9;
+        rotation = 10;
     }
     
     if(IsKeyDown(KEY_SPACE))
@@ -420,8 +420,12 @@ int main() {
     Texture2D background = background1;
 
     InitAudioDevice();  
+    Music BackgroundMusic = LoadMusicStream("sounds/background_music.ogg");
+    SetMusicVolume(BackgroundMusic, 0.3f);
     Sound Bike = LoadSound("sounds/race.wav");
+    SetSoundVolume(Bike, 0.5f);
     Sound GameOver = LoadSound("sounds/game_over.wav");
+    SetSoundVolume(GameOver, 0.5f);
     Sound NewMap = LoadSound("sounds/new-map.wav");
     Sound buttonPressed = LoadSound("sounds/beep.wav");
     
@@ -433,10 +437,16 @@ int main() {
     
     while (!WindowShouldClose()) 
     {
+        if (!IsMusicStreamPlaying(BackgroundMusic))
+            {
+                PlayMusicStream(BackgroundMusic);
+            }
+            UpdateMusicStream(BackgroundMusic);
+
         if (IsKeyPressed(KEY_P)) 
         {
             isPaused = !isPaused;
-            PlaySound(buttonPressed);
+            PlaySound(buttonPressed);  
 
             if (isPaused) 
             {
@@ -486,6 +496,9 @@ int main() {
 
         else if (currentState == PLAYING) 
     {
+
+        PauseMusicStream(BackgroundMusic);
+
         if (!isPaused)
         {
             if(IsKeyDown(KEY_SPACE))
