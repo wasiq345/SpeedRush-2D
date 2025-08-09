@@ -29,8 +29,8 @@ _Coming soon..._
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YourUsername/SpeedRush.git
-cd SpeedRush
+git clone https://github.com/wasiq345/SpeedRush-2D.git
+cd SpeedRush-2D
 ```
 
 ### 2. Install raylib
@@ -57,7 +57,7 @@ g++ main.cpp -o SpeedRush -lraylib -lopengl32 -lgdi32 -lwinmm
 ## 📂 File Structure
 
 ```
-SpeedRush/
+SpeedRush-2D/
 │── main.cpp                # Main game logic
 │── highscore.txt           # Stores player’s best score
 │── sounds/                 # Background music & SFX
@@ -76,5 +76,6 @@ This project is licensed under the MIT License – feel free to use and modify i
 ## 🙌 Credits
 
 - [raylib](https://www.raylib.com/) – Graphics & game framework  
-- Sound & graphic assets by [Your Name or Sources]  
-- Developed by Wasiq  
+- Sound & graphic assets by [Wasiq]  
+- Developed by Wasiq
+- Conect with me on [LinkedIn](www.linkedin.com/in/wasiq-azeem-730215367)
