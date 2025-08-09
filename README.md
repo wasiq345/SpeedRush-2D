@@ -42,6 +42,16 @@ g++ main.cpp -o SpeedRush -lraylib -lopengl32 -lgdi32 -lwinmm
 ```
 > ⚠️ Modify the compile command based on your OS (Windows/Mac/Linux) and IDE setup.
 
+### 4. Run the Simulation
+
+Execute the C++ compiled executable:
+
+```bash
+./SpeedRush-2D
+```
+
+> Ensure the data files and graph image are in the **same directory** as the executable.
+
 ---
 
 ## 🎮 Controls
