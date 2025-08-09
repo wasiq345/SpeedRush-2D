@@ -61,6 +61,8 @@ Execute the C++ compiled executable:
 | Move Left    | ⬅️ Left Arrow     |
 | Move Right   | ➡️ Right Arrow    |
 | Boost        | ␣ Spacebar        |
+| Mute Music   | Key M             |
+| Pause Game   | key P            |
 
 ---
 
