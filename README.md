@@ -78,4 +78,4 @@ This project is licensed under the MIT License – feel free to use and modify i
 - [raylib](https://www.raylib.com/) – Graphics & game framework  
 - Sound & graphic assets by [Wasiq]  
 - Developed by Wasiq
-- Conect with me on [LinkedIn](www.linkedin.com/in/wasiq-azeem-730215367)
+- Connect with me on [LinkedIn](https://www.linkedin.com/in/wasiq-azeem-730215367/)
