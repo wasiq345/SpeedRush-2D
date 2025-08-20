@@ -4,6 +4,8 @@
 
 bool backgroundChanged = false;
 bool isPaused = false;
+bool isMusicPaused = false;
+enum GameState { MENU, PLAYING, GAME_OVER, SHOP, INSTRUCTIONS, EXIT};
 enum BikeType {SCOOTY, NINJA_H2R};
 
 class Vehicle 
@@ -73,6 +75,7 @@ public:
     void Draw();
     void update();
     bool End();
+    bool DrawButton(const char* text, int x, int y, int fontSize, Sound buttonSound, Vector2 mousePos, GameState &currentState, GameState targetState);
     void Reset();
     int score = 0;
     bool newMapSoundPlayed = false;
@@ -253,13 +256,14 @@ Rectangle bike :: GetRect()
 // Shop class definitions
 Shop :: Shop()
 {
-    shopMenu = LoadTexture("graphics/shop-menu.png");
+    shopMenu = LoadTexture("graphics/menu-2.png");
     
 }
 
 void Shop :: Draw(BikeType selectedBike)
 {
     DrawTexture(shopMenu, 0, 0, WHITE);
+    DrawRectangle(0, 0, GetScreenWidth() , GetScreenHeight(), Fade(BLACK, 0.3f));
     Color scootyColor;
 
     if(selectedBike == SCOOTY)
@@ -378,6 +382,38 @@ void Game :: InputHandling()
     }
 }
 
+
+bool Game :: DrawButton(const char* text, int x, int y, int fontSize, Sound buttonSound, Vector2 mousePos, GameState &currentState, GameState targetState)
+{
+    int width = MeasureText(text, fontSize);
+    Rectangle buttonRect = { x - 10, y - 10, width + 20, fontSize + 20 };
+
+    // Hover effect
+    Color buttonColor;
+	if(CheckCollisionPointRec(mousePos, buttonRect))
+	{
+		buttonColor = ORANGE;
+	}
+	else
+	{
+		buttonColor = RED;
+	}
+
+    DrawRectangle(x - 10, y - 10, width + 20, fontSize + 20, buttonColor);
+    DrawText(text, x, y, fontSize, WHITE);
+
+    // check collison
+    if (CheckCollisionPointRec(mousePos, buttonRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        PlaySound(buttonSound);
+        currentState = targetState;
+        return true;
+    }
+
+    return false;
+}
+
+
 bool Game :: End()
 {
     for(int i = 0; i < carList.size(); i++)
@@ -413,9 +449,11 @@ int main() {
     int screenHeight = 650;
     Vector2 bgpos = {-350,-600};
     InitWindow(screenWidth, screenHeight, "SpeedRush 2D");
+
     Texture2D background1 = LoadTexture("graphics/road-1.png");
     Texture2D background2 = LoadTexture("graphics/desert.png");
-    Texture2D menuPage = LoadTexture("graphics/menu-page.png");
+    Texture2D menuPage = LoadTexture("graphics/menu-2.png");
+
     Texture2D gameOver = LoadTexture("graphics/game_over.png");
     Texture2D background = background1;
 
@@ -429,7 +467,6 @@ int main() {
     Sound NewMap = LoadSound("sounds/new-map.wav");
     Sound buttonPressed = LoadSound("sounds/beep.wav");
     
-    enum GameState { MENU, PLAYING, GAME_OVER, SHOP};
     GameState currentState = MENU;
     
     Game game;
@@ -437,11 +474,17 @@ int main() {
     
     while (!WindowShouldClose()) 
     {
-        if (!IsMusicStreamPlaying(BackgroundMusic))
+        if (!IsMusicStreamPlaying(BackgroundMusic) && !isMusicPaused)
             {
                 PlayMusicStream(BackgroundMusic);
             }
             UpdateMusicStream(BackgroundMusic);
+
+        if(IsKeyPressed(KEY_M))
+        {
+           PauseMusicStream(BackgroundMusic);
+           isMusicPaused = !isMusicPaused;
+        }
 
         if (IsKeyPressed(KEY_P)) 
         {
@@ -460,37 +503,31 @@ int main() {
             if (currentState == MENU) 
             {
 
-            if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
-            {
-                PlaySound(buttonPressed);
-                currentState = PLAYING;
-                game.Reset();
-                PlaySound(Bike);
-            }
+                if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) 
+                {
+                    PlaySound(buttonPressed);
+                    currentState = PLAYING;
+                    game.Reset();
+                    PlaySound(Bike);
+                }
 
-            if (IsKeyPressed(KEY_E)) 
-            {
-                break;
-            }
+                if (IsKeyPressed(KEY_E)) 
+                {
+                    break;
+                }
 
-            if(IsKeyPressed(KEY_S))
-            {
-                PlaySound(buttonPressed);
-                currentState = SHOP;
+                if(IsKeyPressed(KEY_S))
+                {
+                    PlaySound(buttonPressed);
+                    currentState = SHOP;
+                }
             }
-        }
         
         else if (currentState == SHOP)
         {
             if(game.shop.HandleInput(game.selectedBike))
             {
                 PlaySound(buttonPressed);
-            }
-            
-            if(IsKeyPressed(KEY_ENTER))
-            {
-                PlaySound(buttonPressed);
-                currentState = MENU;
             }
         }
 
@@ -562,19 +599,67 @@ int main() {
                 break;
             }
         }
+
+        else if(currentState == EXIT)
+        {
+            break;
+        }
         
         BeginDrawing();
         ClearBackground(RAYWHITE);
         
         if (currentState == MENU) 
         {
-            ClearBackground(WHITE);
-            DrawTexture(menuPage, 0, 10, WHITE);
+            DrawTextureEx(menuPage, {0,0}, 0, 1.0f, WHITE);
+            const char* titleText = "SpeedRush 2D";
+           const char* playText = "Press To Start";
+           const char* shopText = "Press To Shop";
+           const char* instructionsText = "Instructions";
+           const char* exitText = "Press To Exit";
+
+            int titleFontSize = 45;
+			int titleWidth = MeasureText(titleText, titleFontSize);
+			int titleX = 45;
+			int titleY = 40;
+			DrawText(titleText, titleX, titleY, titleFontSize, GOLD);
+			DrawLine(titleX, titleY + 55, titleWidth, titleY + 55, LIGHTGRAY);
+
+           int TextX = 112;
+
+           // start button 
+           game.DrawButton(playText, TextX, 180, 20, buttonPressed, GetMousePosition(), currentState, PLAYING);
+
+           // shop button
+           game.DrawButton(shopText, TextX, 280, 20, buttonPressed, GetMousePosition(), currentState, SHOP);
+
+           // instructions button
+           game.DrawButton(instructionsText, TextX, 380, 20, buttonPressed, GetMousePosition(), currentState, INSTRUCTIONS);
+
+           // exit button
+            game.DrawButton(exitText, TextX, 480, 20, buttonPressed, GetMousePosition(), currentState, EXIT);
+        }
+
+        else if(currentState == INSTRUCTIONS)
+        {
+            DrawTextureEx(menuPage, {0,0}, 0, 1.0f, WHITE);
+            DrawRectangle(0, 0, GetScreenWidth() , GetScreenHeight(), Fade(BLACK, 0.3f));
+            DrawText("INSTRUCTIONS", 90, 50, 30, GOLD);
+            DrawText("Use LEFT and RIGHT arrow keys to move the bike.", 10, 120, 15, LIGHTGRAY);
+            DrawText("Press SPACE to boost your speed.", 10, 160, 15, LIGHTGRAY);
+            DrawText("Avoid the cars on the road.", 10, 200, 15, LIGHTGRAY);
+            DrawText("Reach a score of 150 to unlock the desert \n background.", 10, 240, 15, LIGHTGRAY);
+            DrawText("Press P to pause the game.", 10, 290, 15, LIGHTGRAY);
+
+            game.DrawButton("Back to Menu", 150, 550, 15, buttonPressed, GetMousePosition(), currentState, MENU);
         }
         
         else if (currentState == SHOP)
         {
             game.shop.Draw(game.selectedBike);
+            DrawText("Select your bike:", 50, 150, 20, GOLD);
+            DrawText("Press 1 for Scooty", 50, 470, 20, LIGHTGRAY);
+            DrawText("Press 2 for Ninja H2R", 50, 500, 20, LIGHTGRAY);
+            game.DrawButton("Back to Menu", 150, 570, 15, buttonPressed, GetMousePosition(), currentState, MENU);
         }
 
         else if (currentState == PLAYING) 
