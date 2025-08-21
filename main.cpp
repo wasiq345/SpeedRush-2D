@@ -528,6 +528,7 @@ int main() {
             if(game.shop.HandleInput(game.selectedBike))
             {
                 PlaySound(buttonPressed);
+                game.b1.SetBike(game.selectedBike);
             }
         }
 
