@@ -92,21 +92,21 @@ If you're on Linux/macOS, compile manually with:
 
 * * * * *
 
-📂 File Structure
------------------
+## 📂 File Structure
 
+```text
 SpeedRush-2D/
-│── build.bat               # Windows build script
-│── include/                # Header files
+├── build.bat               # Windows build script
+├── include/                # Header files
 │   └── game.h
-│── src/                    # Source code
+├── src/                    # Source code
 │   ├── main.cpp
 │   └── game.cpp
-│── highscore.txt           # Stores player's best score
-│── sounds/                 # Background music & SFX
-│── graphics/               # Sprites & visual assets
-│── README.md               # Project documentation
-
+├── highscore.txt           # Stores player's best score
+├── sounds/                 # Background music & SFX
+├── graphics/               # Sprites & visual assets
+└── README.md               # Project documentation
+```
 * * * * *
 
 📜 License
