@@ -1,12 +1,13 @@
 #include <raylib.h>
-#include<vector>
-#include "HighScore.cpp"
+#include <vector>
+#include "HighScore.h"
+#include "shop.h"
+#include "gametypes.h"  
+using std :: vector, std :: string;
 
 bool backgroundChanged = false;
 bool isPaused = false;
 bool isMusicPaused = false;
-enum GameState { MENU, PLAYING, GAME_OVER, SHOP, INSTRUCTIONS, EXIT};
-enum BikeType {SCOOTY, NINJA_H2R};
 
 class Vehicle 
 {
@@ -52,15 +53,6 @@ public:
     void SetBike(BikeType bikeType);
     BikeType GetCurrentBike();
     int GetSpeed();
-};
-
-class Shop 
-{
-    Texture2D shopMenu;
-public:
-    Shop();
-    void Draw(BikeType selectedBike);
-    bool HandleInput(BikeType& currentBike);
 };
 
 class Game{
@@ -140,7 +132,7 @@ bike :: bike()
     
     currentBike = SCOOTY;
     SetBike(SCOOTY);
-    position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
+    position = {(float)(GetScreenWidth() / 2.0), (float)(GetScreenHeight() - 110.0)};
 }
 
 void bike :: SetBike(BikeType bikeType)
@@ -253,78 +245,6 @@ Rectangle bike :: GetRect()
     return {position.x, position.y, (float)image.width, (float)image.height};
 }
 
-// Shop class definitions
-Shop :: Shop()
-{
-    shopMenu = LoadTexture("graphics/menu-2.png");
-    
-}
-
-void Shop :: Draw(BikeType selectedBike)
-{
-    DrawTexture(shopMenu, 0, 0, WHITE);
-    DrawRectangle(0, 0, GetScreenWidth() , GetScreenHeight(), Fade(BLACK, 0.3f));
-    Color scootyColor;
-
-    if(selectedBike == SCOOTY)
-    {
-        scootyColor = GREEN;
-    }
-    else
-    {
-        scootyColor = DARKGRAY;
-    }
-
-    DrawRectangle(50, 190, 290, 80, scootyColor);
-    DrawRectangleLines(50, 190, 290, 80, WHITE);
-    DrawText("SCOOTY", 60, 200, 20, SKYBLUE);
-    DrawText("Speed: 5", 60, 230, 16, WHITE);
-
-    if(selectedBike == SCOOTY)
-    {
-        DrawText("SELECTED", 220, 200, 16, YELLOW);
-    }
-    
-    Color ninjaColor;
-
-    if(selectedBike == NINJA_H2R)
-    {
-        ninjaColor = GREEN;
-    }
-
-    else
-    {
-        ninjaColor = DARKGRAY;
-    }
-
-    DrawRectangle(50, 300, 290, 80, ninjaColor);
-    DrawRectangleLines(50, 300, 290, 80, WHITE);
-    DrawText("NINJA H2R", 60, 310, 20, SKYBLUE);
-    DrawText("Speed: 7", 60, 340, 16, WHITE);
-
-    if(selectedBike == NINJA_H2R)
-    {
-        DrawText("SELECTED", 220, 320, 16, YELLOW);
-    }
-}
-
-bool Shop :: HandleInput(BikeType& currentBike)
-{
-    if(IsKeyPressed(KEY_ONE))
-    {
-        currentBike = SCOOTY;
-        return true;
-    }
-    
-    if(IsKeyPressed(KEY_TWO))
-    {
-        currentBike = NINJA_H2R;
-        return true;
-    }
-    
-    return false;
-}
-
 // game functions definitions
 Game :: Game()
 {
@@ -431,7 +351,7 @@ bool Game :: End()
 
 void Game :: Reset()
 {
-    b1.position = {GetScreenWidth() / 2.0, GetScreenHeight() - 110.0 };
+    b1.position = {(float)(GetScreenWidth() / 2.0), (float)(GetScreenHeight() - 110.0)};
     b1.SetBike(selectedBike); 
     carList.clear();
     carList.push_back(cars(100, -135));
@@ -525,10 +445,9 @@ int main() {
         
         else if (currentState == SHOP)
         {
-            if(game.shop.HandleInput(game.selectedBike))
+            if(game.shop.HandleInput(game.selectedBike, buttonPressed))
             {
-                PlaySound(buttonPressed);
-                game.b1.SetBike(game.selectedBike);
+            game.b1.SetBike(game.selectedBike);
             }
         }
 
@@ -656,10 +575,8 @@ int main() {
         
         else if (currentState == SHOP)
         {
+            ClearBackground(RAYWHITE);
             game.shop.Draw(game.selectedBike);
-            DrawText("Select your bike:", 50, 150, 20, GOLD);
-            DrawText("Press 1 for Scooty", 50, 470, 20, LIGHTGRAY);
-            DrawText("Press 2 for Ninja H2R", 50, 500, 20, LIGHTGRAY);
             game.DrawButton("Back to Menu", 150, 570, 15, buttonPressed, GetMousePosition(), currentState, MENU);
         }
 

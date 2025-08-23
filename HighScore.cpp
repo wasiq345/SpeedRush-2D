@@ -1,20 +1,14 @@
-#include <iostream>
-#include<fstream>
+#include "HighScore.h"
 
 using namespace std;
 
-class HighScore
-{
-    int highScore;
-    string FileName;
-public:
-    HighScore()
+HighScore :: HighScore()
     {
         FileName = "HighScore.txt";
         LoadScore();
     }
     
-    void LoadScore()
+void HighScore :: LoadScore()
     {
         ifstream file(FileName);
         if(file.is_open())
@@ -28,7 +22,7 @@ public:
         }
     }
 
-    void SaveScore()
+void HighScore :: SaveScore()
     {
         ofstream file(FileName);
         if(file.is_open())
@@ -38,7 +32,7 @@ public:
         }
     }
 
-    void CheckScore(int NewScore)
+void HighScore :: CheckScore(int NewScore)
     {
         LoadScore();
         if(NewScore > highScore)
@@ -48,13 +42,13 @@ public:
         }
     }
 
-    int getHighScore()
+int HighScore :: getHighScore()
     {
         return highScore;
     }
 
-    bool IsNewHighScore(int score)
+bool HighScore :: IsNewHighScore(int score)
     {
         return score > highScore;
     }
-};
+
