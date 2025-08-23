@@ -1,94 +1,128 @@
-# 🏍️ SpeedRush – 2D Bike Racing Game
+🏍️ SpeedRush -- 2D Bike Racing Game
+===================================
 
-A **fast-paced retro side-scroller** built using **C++** and [raylib](https://www.raylib.com/).  
+A **fast-paced retro side-scroller** built using **C++** and [raylib](https://www.raylib.com/).\
 Dodge obstacles, boost through levels, and test your reflexes in an adrenaline-packed racing experience.
 
----
+* * * * *
 
-## ✨ Project Overview
+✨ Project Overview
+------------------
 
 **SpeedRush** is a minimal yet thrilling 2D racing game featuring:
 
-- 🎯 **Simple controls** with smooth movement and responsive boosts  
-- 🔊 **Inbuilt audio** for background music and effects  
-- ⚡ **Boost system** to accelerate past obstacles  
-- 🛒 **Shop system** for upgrades and customizations  
-- 🏆 **Highscore tracking** stored in a local file  
-- 🌄 **Dynamic maps** that change as you progress  
-- 🖼️ **Custom graphics and sounds** stored in dedicated folders
+-   🎯 **Simple controls** with smooth movement and responsive boosts
 
----
+-   🔊 **Inbuilt audio** for background music and effects
 
-## 📷 Preview
+-   ⚡ **Boost system** to accelerate past obstacles
 
-_Coming soon..._
+-   🛒 **Shop system** for upgrades and customizations
 
----
+-   🏆 **Highscore tracking** stored in a local file
 
-## 🔧 Installation & Setup
+-   🌄 **Dynamic maps** that change as you progress
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/wasiq345/SpeedRush-2D.git
-cd SpeedRush-2D
-```
+-   🖼️ **Custom graphics and sounds** stored in dedicated folders
 
-### 2. Install raylib
+* * * * *
+
+📷 Preview
+----------
+
+*Coming soon...*
+
+* * * * *
+
+🔧 Installation & Setup
+-----------------------
+
+### 1\. Clone the Repository
+
+`git clone https://github.com/wasiq345/SpeedRush-2D.git
+cd SpeedRush-2D`
+
+### 2\. Install raylib
+
 Follow the official [raylib installation guide](https://github.com/raysan5/raylib#building) for your OS.
 
-### 3. Compile the Game
-```bash
-g++ main.cpp -o SpeedRush -lraylib -lopengl32 -lgdi32 -lwinmm
-```
-> ⚠️ Modify the compile command based on your OS (Windows/Mac/Linux) and IDE setup.
+### 3\. Build the Game
 
-### 4. Run the Simulation
+#### 🔹 Windows (using `build.bat`)
 
-Execute the C++ compiled executable:
+A preconfigured build script is included. From the project root, run:
 
-```bash
-./SpeedRush-2D
-```
+`.\build.bat main main.exe`
 
-> Ensure the data files and graph image are in the **same directory** as the executable.
+This will:
 
----
+-   Compile all `.cpp` files inside `src/`
 
-## 🎮 Controls
+-   Use headers from `include/`
 
-| Action       | Key              |
-|--------------|------------------|
-| Move Left    | ⬅️ Left Arrow     |
-| Move Right   | ➡️ Right Arrow    |
-| Boost        | ␣ Spacebar        |
-| Mute Music   | Key M             |
-| Pause Game   | key P            |
+-   Link against **raylib** automatically
 
----
+Your executable (`main.exe`) will appear in the project root.
 
-## 📂 File Structure
+#### 🔹 Other Platforms (manual build)
 
-```
-SpeedRush-2D/
-│── main.cpp                # Main game logic
-│── highscore.h             # Highscore logic
-│── highscore.txt           # Stores player’s best score
+If you're on Linux/macOS, compile manually with:
+
+`g++ src/*.cpp -I include -o SpeedRush -lraylib -lopengl32 -lgdi32 -lwinmm`
+
+> ⚠️ Adjust libraries depending on your OS.
+
+### 4\. Run the Game
+
+`./main.exe   # on Windows
+./SpeedRush  # on Linux/macOS`
+
+* * * * *
+
+🎮 Controls
+-----------
+
+| Action | Key |
+| --- | --- |
+| Move Left | ⬅️ Left Arrow |
+| Move Right | ➡️ Right Arrow |
+| Boost | Spacebar |
+| Mute Music | M |
+| Pause Game | P |
+
+* * * * *
+
+📂 File Structure
+-----------------
+
+`SpeedRush-2D/
+│── build.bat               # Windows build script
+│── include/                # Header files
+│   └── game.h
+│── src/                    # Source code
+│   ├── main.cpp
+│   └── game.cpp
+│── highscore.txt           # Stores player's best score
 │── sounds/                 # Background music & SFX
 │── graphics/               # Sprites & visual assets
 │── README.md               # Project documentation
-```
 
----
+* * * * *
 
-## 📜 License
+📜 License
+----------
 
-This project is licensed under the MIT License – feel free to use and modify it.
+This project is licensed under the MIT License -- feel free to use and modify it.
 
----
+* * * * *
 
-## 🙌 Credits
+🙌 Credits
+----------
 
-- [raylib](https://www.raylib.com/) – Graphics & game framework  
-- Sound & graphic assets by [Wasiq]  
-- Developed by Wasiq
-- Connect with me on [LinkedIn](https://www.linkedin.com/in/wasiq-azeem-730215367/)
+-   [raylib](https://www.raylib.com/) -- Graphics & game framework
+
+-   Sound & graphic assets by [Wasiq]
+
+-   Developed by Wasiq
+
+-   Connect with me on [LinkedIn](https://www.linkedin.com/in/wasiq-azeem-730215367/)
