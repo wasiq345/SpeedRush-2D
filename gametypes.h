@@ -1,7 +1,11 @@
-#ifndef GAME_TYPES_H
-#define GAME_TYPES_H
+#pragma once
 
 enum GameState { MENU, PLAYING, GAME_OVER, SHOP, INSTRUCTIONS, EXIT};
 enum BikeType {SCOOTY, NINJA_H2R};
 
-#endif
+
+extern bool backgroundChanged;
+extern bool isMusicPaused;
+extern bool isPaused;
+
+
