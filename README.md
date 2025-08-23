@@ -95,7 +95,7 @@ If you're on Linux/macOS, compile manually with:
 📂 File Structure
 -----------------
 
-`SpeedRush-2D/
+SpeedRush-2D/
 │── build.bat               # Windows build script
 │── include/                # Header files
 │   └── game.h
