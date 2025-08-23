@@ -71,6 +71,7 @@ Execute the C++ compiled executable:
 ```
 SpeedRush-2D/
 │── main.cpp                # Main game logic
+│── highscore.h             # Highscore logic
 │── highscore.txt           # Stores player’s best score
 │── sounds/                 # Background music & SFX
 │── graphics/               # Sprites & visual assets
